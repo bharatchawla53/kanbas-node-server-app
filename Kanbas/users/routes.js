@@ -1,7 +1,5 @@
 import * as dao from "./dao.js";
 
-let currentUser = null;
-
 export default function UserRoutes(app) {
     const createUser = async (req, res) => {
         const user = await dao.createUser(req.body);
@@ -38,17 +36,56 @@ export default function UserRoutes(app) {
         res.json(status);
     };
 
-    const signup = async (req, res) => { };
+    const signup = async (req, res) => {
+        try {
+            const user = await dao.findUserByUsername(req.body.username);
+            console.log(user)
+            if (user) {
+                res.status(400).json(
+                    { message: "Username already taken" });
+                return;
+            }
+            console.log(req.body)
+            const currentUser = await dao.createUser(req.body);
+            console.log(currentUser);
+            req.session["currentUser"] = currentUser;
+            console.log(req.session);
+            res.json(currentUser);
+
+        } catch (e) {
+            if (e.code === 11000 && e.name === 'MongoServerError') {
+                return res.status(400).json(
+                    { message: "Username already taken" });
+            } else {
+                return res.status(500).json({ message: "Internal server error" });
+            }
+        }
+
+    };
 
     const signin = async (req, res) => {
         const { username, password } = req.body;
-        currentUser = await dao.findUserByCredentials(username, password);
-        res.json(currentUser);
+        const currentUser = await dao.findUserByCredentials(username, password);
+        if (currentUser) {
+            req.session["currentUser"] = currentUser;
+            res.json(currentUser);
+        } else {
+            res.sendStatus(401);
+        }
     };
 
-    const signout = (req, res) => { };
+    const signout = (req, res) => {
+        req.session.destroy();
+        res.sendStatus(200);
+    };
 
     const profile = async (req, res) => {
+        const currentUser = req.session["currentUser"];
+        console.log(currentUser);
+        if (!currentUser) {
+            res.sendStatus(401);
+            return;
+        }
         res.json(currentUser);
     };
 
