@@ -10,7 +10,7 @@ import UserRoutes from './Kanbas/users/routes.js';
 import "dotenv/config";
 import session from "express-session";
 
-mongoose.connect("mongodb://127.0.0.1:27017/kanbas");
+mongoose.connect(process.env.DB_CONNECTION_STRING);
 const app = express();
 app.use(cors({
     credentials: true,
