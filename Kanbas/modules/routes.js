@@ -22,7 +22,6 @@ export default function ModuleRoutes(app) {
 
     const updateModule = async (req, res) => {
         const { mid } = req.params;
-        console.log(req.body)
         const status = await dao.updateModule(mid, req.body);
         res.json(status);
     }
