@@ -12,7 +12,8 @@ import session from "express-session";
 import GradeRoutes from './Kanbas/grades/routes.js';
 import EnrollmentRoutes from './Kanbas/enrollments/routes.js';
 
-mongoose.connect(process.env.DB_CONNECTION_STRING);
+const CONNECTION_STRING = process.env.DB_CONNECTION_STRING || 'mongodb://127.0.0.1:27017/kanbas';
+mongoose.connect(CONNECTION_STRING);
 const app = express();
 app.use(cors({
     credentials: true,
