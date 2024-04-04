@@ -11,7 +11,7 @@ export default function ModuleRoutes(app) {
     const createModule = async (req, res) => {
         const { cid } = req.params
         const module = await dao.createModule(cid, req.body);
-        res.json(module)
+        res.json(module);
     }
 
     const deleteModule = async (req, res) => {
