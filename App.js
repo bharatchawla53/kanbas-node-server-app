@@ -28,6 +28,7 @@ const sessionOptions = {
 };
 
 if (process.env.NODE_ENV != "development") {
+    console.log("In Production Mode!!!")
     sessionOptions.proxy = true;
     sessionOptions.cookie = {
         sameSite: "none",
